@@ -1,5 +1,5 @@
 let cards=[];
-const cardsReady=(window.FAKE_PAINTER_CARDS?Promise.resolve(window.FAKE_PAINTER_CARDS):fetch('data/cards.json').then(response=>{
+const cardsReady=(location.protocol==='file:'?Promise.resolve(window.FAKE_PAINTER_CARDS):fetch('data/cards.json').then(response=>{
  if(!response.ok)throw new Error(`无法读取画卡数据（HTTP ${response.status}）`);
  return response.json();
 })).then(data=>{cards=data;return cards}).catch(error=>{console.error('画卡数据加载失败',error);throw error});
