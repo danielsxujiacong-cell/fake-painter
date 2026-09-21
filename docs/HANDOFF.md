@@ -2,13 +2,13 @@
 
 ## Current state
 
-- **Updated:** 2026-09-17
-- **Status:** not started / active / blocked / complete
-- **Last completed:** Added the efficient-execution baseline to the reusable project template.
+- **Updated:** 2026-09-21
+- **Status:** complete
+- **Last completed:** 把 5 张画卡迁移到 `data/cards.json`，新增批量模板、校验脚本和导入脚本。
 
 ## Next action
 
-Copy this template to start a new independent project, then replace all placeholders with project-specific facts before the first push.
+以后新增画卡：复制 `data/cards_batch_template.json` 为 `data/cards_batch.json`，填写图片、标题和 10 条标准，依次运行两个 Node 脚本。
 
 ## How to resume
 
@@ -18,4 +18,4 @@ Copy this template to start a new independent project, then replace all placehol
 
 ## Open questions or risks
 
-- None yet.
+- 当前仓库未配置 GitHub remote，因此本次未执行 push；需要配置 remote 后再同步。

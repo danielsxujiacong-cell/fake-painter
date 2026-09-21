@@ -1,15 +1,13 @@
-const cards=[
-{id:'card_001',title:'加班的狗',image:'assets/cards/card_001.svg',timer:90,criteria:['狗的脖子上系着领带','咖啡杯上有一个爱心','狗戴着圆框眼镜','墙上有飞镖盘','桌上有一根骨头','画面里有台灯','狗的一只耳朵折下来','飞镖盘上插着两根飞镖','办公桌有四个抽屉','咖啡热气至少有三条波浪线']},
-{id:'card_002',title:'月球便利店',image:'assets/cards/card_002.svg',timer:90,criteria:['便利店招牌上有月亮','宇航员手里拿着购物篮','货架上有一瓶汽水','门口有一只猫','地面有倒影','收银台有算盘','月球表面有环形山','画面里有自动门','宇航员穿着靴子','天空中有三颗星星']},
-{id:'card_003',title:'雨中的爵士乐队',image:'assets/cards/card_003.svg',timer:90,criteria:['乐手戴着礼帽','至少有一把萨克斯','地面有三把伞','鼓面上有闪电图案','舞台上有麦克风','雨线是斜着的','观众席有一只红鞋','贝斯手穿条纹袜','背景有路灯','水洼里有音符倒影']},
-{id:'card_004',title:'海盗的生日会',image:'assets/cards/card_004.svg',timer:90,criteria:['海盗戴着眼罩','桌上有生日蛋糕','蛋糕上有五根蜡烛','墙上挂着藏宝图','有一只鹦鹉','桌边有木桶','窗外能看到大海','海盗穿着条纹衫','地上有一枚金币','旗子上有骷髅图案']},
-{id:'card_005',title:'森林里的茶会',image:'assets/cards/card_005.svg',timer:90,criteria:['树桩上有茶壶','至少有两只蘑菇','兔子戴着蝴蝶结','桌布有格子纹','树上挂着风铃','茶杯冒着热气','有一只刺猬','背景有一条小溪','地上有三片落叶','太阳躲在云后面']}];
+let cards=[];
+const cardsReady=fetch('data/cards.json').then(response=>{
+ if(!response.ok)throw new Error(`无法读取画卡数据（HTTP ${response.status}）`);
+ return response.json();
+}).then(data=>{cards=data;return cards});
 document.head.insertAdjacentHTML('beforeend','<link rel="stylesheet" href="fullscreen.css">');
-cards.forEach(card=>{card.image=card.image.replace(/\.svg$/i,'.webp')});
 const $=s=>document.querySelector(s);let state={card:null,seconds:90,selectedTime:90,running:false,timeLocked:false,criterion:0,score:0,interval:null,endTime:null,pauseRemainingTime:90,ended:false};
 function show(name){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$('#screen-'+name).classList.add('active');$('#phase-label').textContent={home:'准备开局',rules:'玩法说明',prepare:'抽取画卡',draw:'描述与作画',score:'评分揭晓',result:'本轮结算'}[name]||''}
 function goHome(){stopTimer();state.running=false;state.endTime=null;if($('#fullscreen-viewer'))$('#fullscreen-viewer').classList.add('hidden');show('home')}
-function pick(){stopTimer();state.card=cards[Math.floor(Math.random()*cards.length)];state.selectedTime=state.card.timer;state.seconds=state.selectedTime;state.pauseRemainingTime=state.selectedTime;state.criterion=0;state.score=0;state.running=false;state.timeLocked=false;state.endTime=null;state.ended=false;$('#card-title').textContent=state.card.title;$('#card-image').src=state.card.image;$('#score-image').src=state.card.image;renderTimer();renderTimeSettings();$('#art-cover').classList.remove('hidden');$('#to-score').classList.add('hidden');$('#timer-toggle').textContent='开始';show('draw')}
+function pick(){if(!cards.length){showToast('画卡数据尚未加载，请稍后再试');return}stopTimer();state.card=cards[Math.floor(Math.random()*cards.length)];state.selectedTime=state.card.timer;state.seconds=state.selectedTime;state.pauseRemainingTime=state.selectedTime;state.criterion=0;state.score=0;state.running=false;state.timeLocked=false;state.endTime=null;state.ended=false;$('#card-title').textContent=state.card.title;$('#card-image').src=state.card.image;$('#score-image').src=state.card.image;renderTimer();renderTimeSettings();$('#art-cover').classList.remove('hidden');$('#to-score').classList.add('hidden');$('#timer-toggle').textContent='开始';show('draw')}
 function renderTimer(){const m=String(Math.floor(state.seconds/60)).padStart(2,'0'),s=String(state.seconds%60).padStart(2,'0');$('#timer').textContent=`${m}:${s}`;$('#timer').classList.toggle('danger',state.seconds<=10)}
 function renderTimeSettings(){const locked=state.timeLocked||state.running||state.ended;$('#time-settings').classList.toggle('locked',locked);document.querySelectorAll('.time-preset[data-time]').forEach(button=>button.classList.toggle('selected',Number(button.dataset.time)===state.selectedTime));$('#custom-minutes').value=Math.floor(state.selectedTime/60);$('#custom-seconds').value=state.selectedTime%60}
 function setTime(seconds){if(state.timeLocked||state.running||state.ended)return;const safe=Math.max(1,Math.min(5999,Math.round(seconds)));state.selectedTime=safe;state.seconds=safe;state.pauseRemainingTime=safe;renderTimer();renderTimeSettings()}

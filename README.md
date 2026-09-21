@@ -16,6 +16,17 @@
 No dependencies or build step.
 ```
 
+## 新增画卡
+
+画卡数据在 `data/cards.json`，图片统一放在 `assets/cards/`，命名为 `card_001.webp`、`card_002.webp`……。批量新增时复制 `data/cards_batch_template.json` 为 `data/cards_batch.json`，填写标题、图片编号和 10 条 criteria，然后在项目根目录运行：
+
+```text
+node scripts/validate-cards.js data/cards_batch.json
+node scripts/import-cards.js data/cards_batch.json
+```
+
+校验通过后，导入脚本会追加新卡、跳过已存在的 id，不覆盖原有画卡。网页请通过 HTTP 服务打开，例如 `python -m http.server 4173` 后访问 `http://localhost:4173`。
+
 ## Repository map
 
 | Path | Purpose |
