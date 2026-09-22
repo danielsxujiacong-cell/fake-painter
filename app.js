@@ -35,7 +35,7 @@ function setupFullscreen(){
  function updateAvailability(){const visible=!!state.card&&state.running&&$('#art-cover').classList.contains('hidden');open.classList.toggle('hidden',!visible);open.disabled=!visible}
  function openViewer(){if(open.disabled)return;image.src=$('#card-image').src;scale=1;x=0;y=0;render();viewer.classList.remove('hidden')}
  function closeViewer(){viewer.classList.add('hidden');gesture=pan=null}
- openViewer.close=closeViewer;viewer.openViewer=openViewer;viewer.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(5,Math.max(1,scale+(e.deltaY<0?.25:-.25)));render()},{passive:false});
+ openViewer.close=closeViewer;viewer.openViewer=openViewer;viewer.closeViewer=closeViewer;viewer.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(5,Math.max(1,scale+(e.deltaY<0?.25:-.25)));render()},{passive:false});
  viewer.addEventListener('touchstart',e=>{if(e.touches.length===2){const c=center(e.touches[0],e.touches[1]);gesture={distance:distance(e.touches[0],e.touches[1]),scale,x,y,cx:c.x,cy:c.y};pan=null}else if(e.touches.length===1&&scale>1){pan={x:e.touches[0].clientX-x,y:e.touches[0].clientY-y}}},{passive:false});
  viewer.addEventListener('touchmove',e=>{if(e.touches.length===2&&gesture){e.preventDefault();const d=distance(e.touches[0],e.touches[1]),c=center(e.touches[0],e.touches[1]);scale=Math.min(5,Math.max(1,gesture.scale*d/gesture.distance));x=gesture.x+(c.x-gesture.cx);y=gesture.y+(c.y-gesture.cy);render()}else if(e.touches.length===1&&pan){e.preventDefault();x=e.touches[0].clientX-pan.x;y=e.touches[0].clientY-pan.y;render()}},{passive:false});
  viewer.addEventListener('touchend',e=>{if(e.touches.length<2)gesture=null;if(e.touches.length===0)pan=null;render()});
